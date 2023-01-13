@@ -1,6 +1,4 @@
 from utils import get_client
-import json
-import sys
 
 async def get_groups(client):
     async for dialog in client.iter_dialogs():
