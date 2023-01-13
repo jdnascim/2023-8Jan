@@ -131,3 +131,9 @@ dmypy.json
 data
 bak
 base.session
+
+# VS Code
+.vscode/
+
+# MacOS files
+.DS_Store
