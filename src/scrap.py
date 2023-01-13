@@ -26,12 +26,14 @@ async def scrap_dialog(client, dialog_id, media=True):
         if media is True:
             await message.download_media(file="../data/test")
     
+
 async def main():
+    """ Main loop """
     await scrap_dialog(client, 1001869654432, media=False)
 
+if __name__ == "__main__":
+    client = get_client()
 
-client = get_client()
-
-with client:
-    client.loop.run_until_complete(main())
+    with client:
+        client.loop.run_until_complete(main())
 
