@@ -3,9 +3,10 @@ from telethon.tl.functions.users import GetFullUserRequest
 from telethon.utils import is_audio, is_image, is_video
 from pymongo import MongoClient
 from pymongo.errors import DuplicateKeyError
-import pandas as pd
+import os
 
 DATABASE_NAME = "T8Jan"
+MEDIAPATH = "../data/{}/{}/{}.{}"
 
 async def scrap_profile_picture(client, entity):
     """get the profile picture of a given entity (i.e., user or group)
@@ -52,17 +53,27 @@ async def scrap_dialog(tlt_client, mongo_client, dialog_id, media=True):
 
         try:
             messages.insert_one(msg_dt)
+            print("Insert Successful", msg_dt["_id"])
         except DuplicateKeyError:
-            print("Existing Key for Message")
+            print("Existing Key for Message", msg_dt["_id"])
             pass
 
         if msg.media and media is True:
             if is_audio(msg.media):
-                await msg.download_media(file=f"../data/{dialog_id}/voices/{msg.id}.mp3")
+                filepath = MEDIAPATH.format(dialog_id, "voices", msg.id, "mp3")
+                if os.path.isfile(filepath) is False:
+                    print(filepath)
+                    await msg.download_media(filepath)
             elif is_image(msg.media):
-                await msg.download_media(file=f"../data/{dialog_id}/images/{msg.id}.png")
+                filepath = MEDIAPATH.format(dialog_id, "images", msg.id, "png")
+                if os.path.isfile(filepath) is False:
+                    print(filepath)
+                    await msg.download_media(filepath)
             elif is_video(msg.media):
-                await msg.download_media(file=f"../data/{dialog_id}/videos/{msg.id}.mp4")
+                filepath = MEDIAPATH.format(dialog_id, "videos", msg.id, "mp4")
+                if os.path.isfile(filepath) is False:
+                    print(filepath)
+                    await msg.download_media(filepath)
 
 def dialog_document(dialog):
     """ returns document representing the given dialog
@@ -94,7 +105,7 @@ async def main():
             try:
                 dialogs.insert_one(dialogdoc)
             except DuplicateKeyError:
-                print("Existing Key for Dialog")
+                print("Existing Key for Dialog", dialogdoc["_id"])
                 pass
 
             await scrap_dialog(tlt_client, mongo_client, dialogdoc["_id"], media=True)
