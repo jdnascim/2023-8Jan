@@ -1,9 +1,7 @@
-# import pyyaml module
-import yaml
-from yaml.loader import SafeLoader
-from telethon import TelegramClient, sync
+from telethon import TelegramClient
+import configparser
 
-CONFIG_FILE = "../artifacts/config.yml"
+CONFIG_FILE = "../artifacts/config.ini"
 
 def __config():
     """ Returns the configuration file
@@ -11,11 +9,14 @@ def __config():
     Returns:
         data (dict): configuration data
     """
-    with open(CONFIG_FILE) as fp:
-        data = yaml.load(fp, Loader=SafeLoader)
-        return data
+    # with open(CONFIG_FILE) as fp:
+        # data = yaml.load(fp, Loader=SafeLoader)
+        # return data
+    config = configparser.ConfigParser()
+    config.read(CONFIG_FILE)
+    return config
 
-def get_client(name_session="base"):
+def get_telethon_client(name_session="base"):
     """_summary_
 
     Args:
@@ -26,8 +27,8 @@ def get_client(name_session="base"):
     """
     config = __config()
 
-    api_id = config["api_id"]
-    api_hash = config["api_hash"]
+    api_id = config.get("telethon", "api_id")
+    api_hash = config.get("telethon", "api_hash")
     client = TelegramClient(name_session, api_id, api_hash).start()
 
     # You will be asked to enter your mobile number- Enter mobile number with country code
