@@ -131,6 +131,9 @@ dmypy.json
 data
 bak
 base.session
+src/scripts
+base.session-journal
+new_groups.txt
 
 # VS Code
 .vscode/
