@@ -1,4 +1,6 @@
 from telethon import TelegramClient
+from datetime import datetime
+import pytz
 import configparser
 
 CONFIG_FILE = "../artifacts/config.ini"
@@ -35,3 +37,27 @@ def get_telethon_client(name_session="base"):
     # Enter OTP (For OTP check Telegram inbox)
     return client
         
+def get_database_name():
+    """ wrapper for getting the database name in MongoDB
+
+    Returns:
+        str: database name
+    """
+    config = __config()
+
+    return config.get("mongodb", "database_name")
+    
+    
+def get_start_date():
+    config = __config()
+
+    datestr = config.get("scrapping", "start_date")
+    date = datetime.strptime(datestr, "%Y-%m-%dT%H:%M:%SZ")
+
+    utc=pytz.UTC
+    utc_date = utc.localize(date)
+
+    return utc_date
+
+    
+    
