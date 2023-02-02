@@ -1,5 +1,5 @@
 from pymongo import MongoClient
-from utils import get_database_name
+from utils import get_database_name, get_field
 import re
 
 
@@ -18,12 +18,17 @@ def main():
             urls = set(re.findall('t\.me\/[a-zA-Z0-9\+\-\_]+', msg["message"]))
             for u in urls:
                 if u in new_groups:
-                    new_groups[u] += 1
+                    new_groups[u].add(msg["_id"]["dialog_id"])
                 else:
-                    new_groups[u] = 1
+                    new_groups[u] = set()
+                    new_groups[u].add(msg["_id"]["dialog_id"])
         
-        with open("./new_groups.txt", "w") as fp:
-            for ngp, count in sorted(new_groups.items(), key=lambda item: item[1], reverse=True):
+        new_groups_count = dict()
+        for ngp in new_groups.keys():
+            new_groups_count[ngp] = len(new_groups[ngp])
+        
+        with open(get_field("scrapping", "new_dialogs_file"), "w") as fp:
+            for ngp, count in sorted(new_groups_count.items(), key=lambda item: item[1], reverse=True):
                 fp.write(ngp + " : " + str(count) + '\n')
                 
 if __name__ == "__main__":

@@ -59,5 +59,21 @@ def get_start_date():
 
     return utc_date
 
+
+def get_field(base, field):
+    """_summary_
+
+    Args:
+        base (str): field group (e.g.) ["telethon"]
+        field (str): field name
+
+    Returns:
+        str: field value
+    """
+    config = __config()
+
+    return config.get(base, field)
+    
+
     
     

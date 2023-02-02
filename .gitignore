@@ -133,7 +133,7 @@ bak
 base.session
 src/scripts
 base.session-journal
-new_groups.txt
+new_dialogs.txt
 
 # VS Code
 .vscode/
